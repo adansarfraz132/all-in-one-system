@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sanabil Studio · All in One</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=4">
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="canvas-root"></div>
+<div class="proto-shell" id="proto-root"></div>
+
+<div class="tw-panel" id="tw-panel">
+  <h4>Tweaks</h4>
+  <div class="tw-row"><span>Brand color</span><div class="tw-swatches" id="tw-swatches"></div></div>
+</div>
+
+<script src="design-canvas.jsx" type="text/babel"></script>
+<script src="components/primitives.jsx" type="text/babel"></script>
+<script src="components/subfunctions.jsx" type="text/babel"></script>
+<script src="components/landings.jsx" type="text/babel"></script>
+<script src="components/modules.jsx" type="text/babel"></script>
+<script src="components/pricing.jsx" type="text/babel"></script>
+<script src="components/proto.jsx" type="text/babel"></script>
+
+<script type="text/babel">
+const { useState, useEffect } = React;
+
+const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+  "brand": "aubergine"
+}/*EDITMODE-END*/;
+
+const BRANDS = {
+  aubergine: { main: '#5b2a78', alt: '#7a3fa0', soft: '#efe7f5', ink: '#3b1a52' },
+  indigo:    { main: '#3d3bcb', alt: '#5a5dd3', soft: '#e2e2f8', ink: '#27258a' },
+  forest:    { main: '#1f7a4a', alt: '#2fa566', soft: '#dcf4ea', ink: '#13502f' },
+  teal:      { main: '#1e7a7d', alt: '#3fb5b0', soft: '#d7f0ef', ink: '#10494b' },
+  slate:     { main: '#1c1a26', alt: '#3a3a44', soft: '#e7e8ed', ink: '#0e0e14' },
+};
+
+const applyBrand = (key) => {
+  const b = BRANDS[key] || BRANDS.aubergine;
+  const r = document.documentElement.style;
+  r.setProperty('--brand', b.main);
+  r.setProperty('--brand-2', b.alt);
+  r.setProperty('--brand-soft', b.soft);
+  r.setProperty('--brand-ink', b.ink);
+};
+
+const App = () => {
+  const [protoOpen, setProtoOpen] = useState(false);
+  const openProto = () => { document.body.classList.add('proto-active'); setProtoOpen(true); };
+  const closeProto = () => { document.body.classList.remove('proto-active'); setProtoOpen(false); };
+
+  useEffect(() => { applyBrand(TWEAK_DEFAULTS.brand); }, []);
+
+  return (
+    <BundleProvider>
+      <DesignCanvas>
+        <DCSection id="intro" title="Sanabil Studio · All in One — wireframe pitch"
+          subtitle="Formal product-marketing style · Odoo-grouped apps · Deel-style hero · pan & zoom · click to focus">
+          <DCArtboard id="brief" label="Brief" width={680} height={520}>
+            <div style={{ padding: 36, height: '100%', background: 'var(--bg)' }}>
+              <span className="chip brand" style={{ marginBottom: 12 }}>BRIEF</span>
+              <h2 className="f-display" style={{ fontSize: 30, margin: '6px 0 12px' }}>Unified ops platform, pick-your-own features.</h2>
+              <p className="f-body" style={{ fontSize: 14, color: 'var(--text-3)', lineHeight: 1.55 }}>
+                Goal: take this to 10–20 companies and learn exactly which sub-features they'd pay for. Maybe they only want Performance + Corporate Cards + ZATCA — tick those, see the price, and learn what to build first.
+              </p>
+              <hr className="sep" style={{ margin: '18px 0' }}/>
+              <div className="f-head" style={{ fontSize: 14, marginBottom: 8 }}>How it's laid out</div>
+              <ol style={{ fontSize: 13, lineHeight: 1.8, margin: 0, paddingLeft: 18, color: 'var(--text-2)' }}>
+                <li>Clickable prototype — the meeting flow</li>
+                <li>2 landing heroes — Deel-dark & Odoo-light</li>
+                <li>Customizable modules picker (40+ sub-features)</li>
+                <li>HR dashboard — clean, clickable, realistic</li>
+                <li>Per-feature pricing with live calculator</li>
+                <li>Simple capture checklist</li>
+              </ol>
+              <hr className="sep" style={{ margin: '18px 0' }}/>
+              <button className="btn brand" onClick={openProto}>▷ Open clickable prototype</button>
+            </div>
+          </DCArtboard>
+
+          <DCArtboard id="system" label="Design system" width={580} height={520}>
+            <div style={{ padding: 28, height: '100%', background: 'var(--bg)', overflow: 'auto' }}>
+              <div className="f-head" style={{ fontSize: 18, marginBottom: 14 }}>Design system</div>
+              <div style={{ marginBottom: 14 }}>
+                <div style={{ fontSize: 11, color: 'var(--text-4)', letterSpacing: 1.5, marginBottom: 6 }}>TYPE</div>
+                <div className="card" style={{ padding: 12 }}>
+                  <div className="f-display" style={{ fontSize: 24 }}>Inter · display & heads</div>
+                  <div className="f-script" style={{ fontSize: 20 }}>Caveat · section titles</div>
+                  <div className="f-body" style={{ fontSize: 13, color: 'var(--text-3)' }}>Inter body · 400</div>
+                  <div className="f-mono" style={{ fontSize: 12 }}>JetBrains Mono · data</div>
+                </div>
+              </div>
+              <div style={{ marginBottom: 14 }}>
+                <div style={{ fontSize: 11, color: 'var(--text-4)', letterSpacing: 1.5, marginBottom: 6 }}>COLORS</div>
+                <div style={{ display: 'flex', gap: 6 }}>
+                  {[['brand','var(--brand)'],['soft','var(--brand-soft)'],['ink','var(--text)'],['alt','var(--bg-alt)'],['ok','var(--ok)'],['warn','var(--warn)']].map(([n,c]) => (
+                    <div key={n} style={{ textAlign: 'center' }}>
+                      <div style={{ width: 40, height: 40, background: c, borderRadius: 8, border: '1px solid var(--border)' }}/>
+                      <div className="f-mono" style={{ fontSize: 10, marginTop: 4 }}>{n}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <div style={{ fontSize: 11, color: 'var(--text-4)', letterSpacing: 1.5, marginBottom: 6 }}>COMPONENTS</div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
+                  <button className="btn sm">Button</button>
+                  <button className="btn sm primary">Primary</button>
+                  <button className="btn sm brand">Brand</button>
+                  <span className="chip">chip</span>
+                  <span className="chip brand">brand</span>
+                  <span className="chip warn">KSA</span>
+                </div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <AppIcon tone="pink" glyph="users"/>
+                  <AppIcon tone="green" glyph="payroll"/>
+                  <AppIcon tone="purple" glyph="finance"/>
+                  <AppIcon tone="teal" glyph="projects"/>
+                </div>
+              </div>
+            </div>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="landings" title="Landing · 2 variants" subtitle="Deel-style dark hero vs Odoo-style light all-apps page.">
+          <DCArtboard id="landingA" label="A · Hybrid (dark hero + apps grid)" width={1280} height={2400}>
+            <LandingA onOpenProto={openProto}/>
+          </DCArtboard>
+          <DCArtboard id="landingB" label="B · Odoo-style (light, all apps)" width={1280} height={1100}>
+            <LandingB onOpenProto={openProto}/>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="modules" title="Build your bundle" subtitle="Odoo-grouped modules with per-feature toggles, live bundle summary on the right.">
+          <DCArtboard id="picker" label="Modules picker" width={1280} height={860}>
+            <ModulesCustomizable onOpenProto={openProto}/>
+          </DCArtboard>
+          <DCArtboard id="hr" label="HR dashboard (sample)" width={1280} height={820}>
+            <DetailHR onOpenProto={openProto}/>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="pricing" title="Pricing · per feature" subtitle="Live calculator, bundle summary, estimated stack savings.">
+          <DCArtboard id="custom" label="Per-feature à la carte" width={1280} height={820}>
+            <PricingCustom onOpenProto={openProto}/>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="capture" title="Interest capture · simple checklist" subtitle="Fill in live with companies. Picks carry from the bundle screen.">
+          <DCArtboard id="check" label="Checklist" width={1120} height={760}>
+            <CaptureChecklistV2 onSubmit={() => {}}/>
+          </DCArtboard>
+        </DCSection>
+
+        <DCSection id="proto" title="Clickable prototype" subtitle="6 screens · Hero A/B toggle on landing · state persists across.">
+          <DCArtboard id="open" label="Open →" width={680} height={420}>
+            <div style={{ padding: 40, height: '100%', background: 'var(--bg-alt)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 14, textAlign: 'center' }}>
+              <h3 className="f-display" style={{ fontSize: 28, margin: 0 }}>6 screens. Fully clickable.</h3>
+              <p className="f-body" style={{ fontSize: 14, color: 'var(--text-3)', maxWidth: 420, margin: 0 }}>
+                Landing → bundle picker → HR dashboard → pricing → capture → thanks.
+              </p>
+              <button className="btn lg brand" onClick={openProto}>▷ Launch prototype</button>
+            </div>
+          </DCArtboard>
+        </DCSection>
+      </DesignCanvas>
+
+      {protoOpen && ReactDOM.createPortal(<Proto onClose={closeProto}/>, document.getElementById('proto-root'))}
+    </BundleProvider>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById('canvas-root')).render(<App/>);
+
+(() => {
+  let tweaks = { ...TWEAK_DEFAULTS };
+  const panel = document.getElementById('tw-panel');
+  const swatches = document.getElementById('tw-swatches');
+
+  Object.keys(BRANDS).forEach(key => {
+    const sw = document.createElement('div');
+    sw.className = 'tw-swatch' + (key === tweaks.brand ? ' selected' : '');
+    sw.style.background = BRANDS[key].main;
+    sw.title = key;
+    sw.onclick = () => {
+      tweaks.brand = key;
+      applyBrand(key);
+      document.querySelectorAll('.tw-swatch').forEach(el => el.classList.remove('selected'));
+      sw.classList.add('selected');
+      window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { brand: key } }, '*');
+    };
+    swatches.appendChild(sw);
+  });
+
+  window.addEventListener('message', (e) => {
+    if (!e.data) return;
+    if (e.data.type === '__activate_edit_mode') panel.classList.add('open');
+    if (e.data.type === '__deactivate_edit_mode') panel.classList.remove('open');
+  });
+  window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+})();
+</script>
+</body>
+</html>

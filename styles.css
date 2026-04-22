@@ -1,0 +1,108 @@
+/* Sanabil Studio All in One — formal product-marketing theme */
+:root {
+  --bg: #ffffff;
+  --bg-alt: #f7f5f2;
+  --bg-deep: #1a1629;
+  --bg-deep-2: #241d3a;
+  --surface-2: #f0eeea;
+
+  --text: #1c1a26;
+  --text-2: #3a3740;
+  --text-3: #6b6775;
+  --text-4: #9a96a3;
+
+  --border: #eceae5;
+  --border-strong: #d9d6cf;
+
+  --brand: #5b2a78;
+  --brand-2: #7a3fa0;
+  --brand-soft: #efe7f5;
+  --brand-ink: #3b1a52;
+
+  --ok: #16a34a;
+  --warn: #d97706;
+  --danger: #dc2626;
+
+  --sh-sm: 0 1px 2px rgba(16, 12, 30, .06);
+  --sh-md: 0 4px 14px rgba(16, 12, 30, .08);
+  --sh-lg: 0 20px 60px rgba(16, 12, 30, .14);
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.f-display { font-family: 'Inter', system-ui, sans-serif; font-weight: 700; letter-spacing: -0.02em; color: var(--text); }
+.f-head    { font-family: 'Inter', system-ui, sans-serif; font-weight: 600; color: var(--text); }
+.f-body    { font-family: 'Inter', system-ui, sans-serif; font-weight: 400; }
+.f-script  { font-family: 'Caveat', cursive; font-weight: 600; color: var(--text); }
+.f-mono    { font-family: 'JetBrains Mono', monospace; }
+
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  transition: all 140ms;
+}
+.card.hover:hover { box-shadow: var(--sh-md); transform: translateY(-1px); }
+.card.dark { background: var(--text); color: #fff; border: none; }
+
+.btn {
+  font-family: inherit; font-weight: 500; font-size: 14px;
+  padding: 8px 14px; border-radius: 8px;
+  border: 1px solid var(--border-strong); background: #fff; color: var(--text);
+  cursor: pointer; transition: all 120ms; display: inline-flex; align-items: center; gap: 6px;
+}
+.btn:hover:not(:disabled) { background: var(--bg-alt); }
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn.sm { padding: 5px 10px; font-size: 13px; }
+.btn.lg { padding: 11px 20px; font-size: 15px; font-weight: 600; }
+.btn.primary { background: var(--text); color: #fff; border-color: var(--text); }
+.btn.primary:hover:not(:disabled) { background: #000; }
+.btn.brand { background: var(--brand); color: #fff; border-color: var(--brand); }
+.btn.brand:hover:not(:disabled) { background: var(--brand-ink); }
+.btn.ghost { background: transparent; border-color: transparent; }
+.btn.ghost:hover:not(:disabled) { background: var(--bg-alt); }
+
+.chip {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 11px; font-weight: 500; padding: 3px 8px; border-radius: 999px;
+  background: var(--bg-alt); color: var(--text-2); border: 1px solid var(--border);
+  letter-spacing: 0.2px;
+}
+.chip.brand { background: var(--brand-soft); color: var(--brand); border-color: transparent; }
+.chip.warn { background: #fef3c7; color: #92400e; border-color: transparent; }
+.chip.dark { background: rgba(255,255,255,.12); color: #fff; border-color: rgba(255,255,255,.15); }
+
+.sep { border: none; height: 1px; background: var(--border); margin: 10px 0; }
+
+.scroll { overflow-y: auto; scrollbar-width: thin; }
+.scroll::-webkit-scrollbar { width: 6px; }
+.scroll::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+
+.clickable { cursor: pointer; transition: all 120ms; }
+
+.tw-panel {
+  position: fixed; bottom: 18px; right: 18px; z-index: 1000;
+  background: #fff; border: 1px solid var(--border-strong);
+  border-radius: 12px; padding: 14px 16px;
+  box-shadow: var(--sh-lg);
+  font-family: 'Inter', sans-serif; font-size: 13px;
+  display: none; min-width: 240px;
+}
+.tw-panel.open { display: block; }
+.tw-panel h4 { margin: 0 0 10px; font-size: 13px; font-weight: 600; color: var(--text); }
+.tw-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 6px 0; }
+.tw-swatches { display: flex; gap: 6px; }
+.tw-swatch { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--border-strong); cursor: pointer; }
+.tw-swatch.selected { box-shadow: 0 0 0 2px #fff, 0 0 0 3.5px var(--text); }
+
+.proto-shell { display: none; position: fixed; inset: 0; background: var(--bg); z-index: 500; overflow: auto; }
+body.proto-active .proto-shell { display: block; }
+body.proto-active #canvas-root { display: none; }

@@ -1,0 +1,8 @@
+.DS_Store
+node_modules/
+.vercel
+*.log
+.design-canvas.state.json
+Sanabil Studio All in One - Standalone.html
+Sanabil Studio All in One - standalone-src.html
+uploads/
