@@ -1,6 +1,6 @@
 // Landings — hybrid formal style. Real logos. Hero + proof + Odoo-grouped apps grid.
 
-const TopNav = ({ onOpenProto, dark }) => (
+const TopNav = ({ onOpenProto, onNavigate, dark }) => (
   <div style={{
     padding: '18px 48px',
     display: 'flex', alignItems: 'center', gap: 32,
@@ -14,12 +14,28 @@ const TopNav = ({ onOpenProto, dark }) => (
                      paddingLeft: 12, marginLeft: 2, letterSpacing: 0.2 }}>All in One</span>
     </div>
     <div style={{ flex: 1, display: 'flex', gap: 24 }}>
-      {['Product', 'Solutions', 'Pricing', 'Customers', 'Resources'].map(x => (
-        <span key={x} style={{ fontSize: 14, color: dark ? 'rgba(255,255,255,.75)' : 'var(--text-2)', cursor: 'pointer' }}>{x}</span>
+      {[
+        { label: 'Home', key: 'home' },
+        { label: 'Product', key: 'product' },
+        { label: 'Build Bundle', key: 'solutions' },
+        { label: 'Pricing', key: 'pricing' },
+        { label: 'Contact', key: 'contact' },
+      ].map(item => (
+        <a
+          key={item.key}
+          href={`#${item.key}`}
+          onClick={(e) => {
+            if (!onNavigate) return;
+            e.preventDefault();
+            onNavigate(item.key);
+          }}
+          style={{ fontSize: 14, color: dark ? 'rgba(255,255,255,.75)' : 'var(--text-2)', cursor: 'pointer', textDecoration: 'none' }}
+        >
+          {item.label}
+        </a>
       ))}
     </div>
     <span style={{ fontSize: 14, color: dark ? 'rgba(255,255,255,.75)' : 'var(--text-2)', cursor: 'pointer' }}>Login</span>
-    <button className="btn sm" onClick={onOpenProto} style={dark ? { background: 'transparent', color: '#fff', borderColor: 'rgba(255,255,255,.3)' } : {}}>Book a demo</button>
     <button className="btn sm primary" onClick={onOpenProto} style={dark ? { background: '#fff', color: '#1a1629', borderColor: '#fff' } : {}}>Get started →</button>
   </div>
 );
@@ -41,12 +57,12 @@ const TrustBar = ({ dark }) => (
 );
 
 // LANDING A — HYBRID: dark hero + Odoo-grouped apps grid + proof sections. Best of both.
-const LandingA = ({ onOpenProto }) => (
+const LandingA = ({ onOpenProto, onNavigate }) => (
   <div style={{ width: '100%', height: '100%', background: 'var(--bg)', display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
 
     {/* 1. Dark hero */}
     <div style={{ background: 'linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-deep-2) 100%)', color: '#fff' }}>
-      <TopNav onOpenProto={onOpenProto} dark/>
+      <TopNav onOpenProto={onOpenProto} onNavigate={onNavigate} dark/>
       <div style={{ padding: '80px 48px 64px', display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: 56, alignItems: 'center', maxWidth: 1280, margin: '0 auto' }}>
         <div>
           <span className="chip dark" style={{ marginBottom: 20 }}>⌘  Built for SMBs & mid-market · KSA & MENA</span>
@@ -232,7 +248,7 @@ const LandingA = ({ onOpenProto }) => (
     </div>
 
     {/* 4. How it works */}
-    <div style={{ padding: '40px 48px 100px', maxWidth: 1200, margin: '0 auto', background: 'var(--bg-alt)' }}>
+    <div style={{ padding: '40px 4% 100px', width: '92%', margin: '0 auto', background: 'var(--bg-alt)' }}>
       <div style={{ textAlign: 'center', marginBottom: 44, paddingTop: 30 }}>
         <div style={{ fontSize: 12, letterSpacing: 2, color: 'var(--text-4)', fontWeight: 500, marginBottom: 10 }}>HOW IT WORKS</div>
         <h2 className="f-display" style={{ fontSize: 36, margin: 0, maxWidth: 640, marginInline: 'auto', letterSpacing: -0.5 }}>Do more in less time with fewer tools.</h2>
@@ -255,9 +271,9 @@ const LandingA = ({ onOpenProto }) => (
 );
 
 // LANDING B — Odoo-style light hero + all apps grid
-const LandingB = ({ onOpenProto }) => (
+const LandingB = ({ onOpenProto, onNavigate }) => (
   <div style={{ width: '100%', height: '100%', background: 'var(--bg)', overflow: 'auto' }}>
-    <TopNav onOpenProto={onOpenProto}/>
+    <TopNav onOpenProto={onOpenProto} onNavigate={onNavigate}/>
     <div style={{ padding: '64px 48px 40px', textAlign: 'center', maxWidth: 900, margin: '0 auto' }}>
       <h1 className="f-display" style={{ fontSize: 56, lineHeight: 1.05, margin: '0 0 18px', letterSpacing: -1.5 }}>
         One need, <span style={{ color: 'var(--brand)' }}>one app</span>.

@@ -2,7 +2,7 @@
 
 const PROTO_SCREENS = [
   { id: 'landing',  name: '1. Landing' },
-  { id: 'modules',  name: '2. Build bundle' },
+  { id: 'modules',  name: '2. Build Bundle' },
   { id: 'hrDetail', name: '3. HR sample' },
   { id: 'pricing',  name: '4. Pricing' },
   { id: 'capture',  name: '5. Tell us' },

@@ -19,7 +19,6 @@
   <div class="tw-row"><span>Brand color</span><div class="tw-swatches" id="tw-swatches"></div></div>
 </div>
 
-<script src="design-canvas.jsx" type="text/babel"></script>
 <script src="components/primitives.jsx" type="text/babel"></script>
 <script src="components/subfunctions.jsx" type="text/babel"></script>
 <script src="components/landings.jsx" type="text/babel"></script>
@@ -51,126 +50,105 @@ const applyBrand = (key) => {
   r.setProperty('--brand-ink', b.ink);
 };
 
+const SiteThankYou = ({ onRestart }) => {
+  const b = useBundle();
+  return (
+    <div style={{ width: '100%', minHeight: '62vh', background: 'var(--bg)', padding: '56px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 18, textAlign: 'center' }}>
+      <div style={{ width: 48, height: 48, borderRadius: 24, background: 'var(--brand-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--brand)', fontSize: 26 }}>✓</div>
+      <h2 className="f-display" style={{ fontSize: 52, maxWidth: 920, lineHeight: 1.06, margin: 0 }}>Shukran. You shaped our roadmap.</h2>
+      <p className="f-body" style={{ fontSize: 20, color: 'var(--text-3)', maxWidth: 780, margin: 0 }}>
+        {b.picked.size} feature{b.picked.size === 1 ? '' : 's'} on your wishlist · SAR {b.total} /emp/mo. We&apos;ll follow up in 48 hours with a tailored rollout plan.
+      </p>
+      {b.picked.size > 0 && (
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'center', maxWidth: 860 }}>
+          {[...b.picked].map(id => { const s = findSub(id); return s ? <span key={id} className="chip brand">{s.name}</span> : null; })}
+        </div>
+      )}
+      <button className="btn" onClick={onRestart}>↺ Restart prototype</button>
+    </div>
+  );
+};
+
 const App = () => {
   const [protoOpen, setProtoOpen] = useState(false);
+  const [activePage, setActivePage] = useState(() => (window.location.hash || '#home').replace('#', ''));
   const openProto = () => { document.body.classList.add('proto-active'); setProtoOpen(true); };
   const closeProto = () => { document.body.classList.remove('proto-active'); setProtoOpen(false); };
+  const goToPage = (key) => {
+    window.location.hash = `#${key}`;
+    setActivePage(key);
+  };
 
   useEffect(() => { applyBrand(TWEAK_DEFAULTS.brand); }, []);
+  useEffect(() => {
+    const onHashChange = () => setActivePage((window.location.hash || '#home').replace('#', ''));
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
 
   return (
     <BundleProvider>
-      <DesignCanvas>
-        <DCSection id="intro" title="Sanabil Studio · All in One — wireframe pitch"
-          subtitle="Formal product-marketing style · Odoo-grouped apps · Deel-style hero · pan & zoom · click to focus">
-          <DCArtboard id="brief" label="Brief" width={680} height={520}>
-            <div style={{ padding: 36, height: '100%', background: 'var(--bg)' }}>
-              <span className="chip brand" style={{ marginBottom: 12 }}>BRIEF</span>
-              <h2 className="f-display" style={{ fontSize: 30, margin: '6px 0 12px' }}>Unified ops platform, pick-your-own features.</h2>
-              <p className="f-body" style={{ fontSize: 14, color: 'var(--text-3)', lineHeight: 1.55 }}>
-                Goal: take this to 10–20 companies and learn exactly which sub-features they'd pay for. Maybe they only want Performance + Corporate Cards + ZATCA — tick those, see the price, and learn what to build first.
-              </p>
-              <hr className="sep" style={{ margin: '18px 0' }}/>
-              <div className="f-head" style={{ fontSize: 14, marginBottom: 8 }}>How it's laid out</div>
-              <ol style={{ fontSize: 13, lineHeight: 1.8, margin: 0, paddingLeft: 18, color: 'var(--text-2)' }}>
-                <li>Clickable prototype — the meeting flow</li>
-                <li>2 landing heroes — Deel-dark & Odoo-light</li>
-                <li>Customizable modules picker (40+ sub-features)</li>
-                <li>HR dashboard — clean, clickable, realistic</li>
-                <li>Per-feature pricing with live calculator</li>
-                <li>Simple capture checklist</li>
-              </ol>
-              <hr className="sep" style={{ margin: '18px 0' }}/>
-              <button className="btn brand" onClick={openProto}>▷ Open clickable prototype</button>
-            </div>
-          </DCArtboard>
+      <main className="site">
+        {activePage !== 'home' && (
+          <TopNav onOpenProto={openProto} onNavigate={goToPage}/>
+        )}
 
-          <DCArtboard id="system" label="Design system" width={580} height={520}>
-            <div style={{ padding: 28, height: '100%', background: 'var(--bg)', overflow: 'auto' }}>
-              <div className="f-head" style={{ fontSize: 18, marginBottom: 14 }}>Design system</div>
-              <div style={{ marginBottom: 14 }}>
-                <div style={{ fontSize: 11, color: 'var(--text-4)', letterSpacing: 1.5, marginBottom: 6 }}>TYPE</div>
-                <div className="card" style={{ padding: 12 }}>
-                  <div className="f-display" style={{ fontSize: 24 }}>Inter · display & heads</div>
-                  <div className="f-script" style={{ fontSize: 20 }}>Caveat · section titles</div>
-                  <div className="f-body" style={{ fontSize: 13, color: 'var(--text-3)' }}>Inter body · 400</div>
-                  <div className="f-mono" style={{ fontSize: 12 }}>JetBrains Mono · data</div>
-                </div>
+        {activePage === 'home' && (
+          <LandingA onOpenProto={() => goToPage('solutions')} onNavigate={goToPage}/>
+        )}
+
+        {activePage === 'solutions' && (
+          <section className="site-section">
+            <div className="site-container">
+              <div className="site-section-head">
+                <h2 className="f-display">Build bundle</h2>
+                <p className="f-body">Configure your bundle across HR, finance, and operations.</p>
               </div>
-              <div style={{ marginBottom: 14 }}>
-                <div style={{ fontSize: 11, color: 'var(--text-4)', letterSpacing: 1.5, marginBottom: 6 }}>COLORS</div>
-                <div style={{ display: 'flex', gap: 6 }}>
-                  {[['brand','var(--brand)'],['soft','var(--brand-soft)'],['ink','var(--text)'],['alt','var(--bg-alt)'],['ok','var(--ok)'],['warn','var(--warn)']].map(([n,c]) => (
-                    <div key={n} style={{ textAlign: 'center' }}>
-                      <div style={{ width: 40, height: 40, background: c, borderRadius: 8, border: '1px solid var(--border)' }}/>
-                      <div className="f-mono" style={{ fontSize: 10, marginTop: 4 }}>{n}</div>
-                    </div>
-                  ))}
-                </div>
+              <ModulesCustomizable onOpenProto={() => goToPage('pricing')}/>
+            </div>
+          </section>
+        )}
+
+        {activePage === 'product' && (
+          <section className="site-section alt">
+            <div className="site-container">
+              <div className="site-section-head">
+                <h2 className="f-display">Product Experience</h2>
+                <p className="f-body">Preview the HR workspace and daily workflows.</p>
               </div>
-              <div>
-                <div style={{ fontSize: 11, color: 'var(--text-4)', letterSpacing: 1.5, marginBottom: 6 }}>COMPONENTS</div>
-                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', marginBottom: 8 }}>
-                  <button className="btn sm">Button</button>
-                  <button className="btn sm primary">Primary</button>
-                  <button className="btn sm brand">Brand</button>
-                  <span className="chip">chip</span>
-                  <span className="chip brand">brand</span>
-                  <span className="chip warn">KSA</span>
-                </div>
-                <div style={{ display: 'flex', gap: 8 }}>
-                  <AppIcon tone="pink" glyph="users"/>
-                  <AppIcon tone="green" glyph="payroll"/>
-                  <AppIcon tone="purple" glyph="finance"/>
-                  <AppIcon tone="teal" glyph="projects"/>
-                </div>
+              <DetailHR onOpenProto={openProto}/>
+            </div>
+          </section>
+        )}
+
+        {activePage === 'pricing' && (
+          <section className="site-section" style={{ padding: 24 }}>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <div className="card" style={{ width: 1280, minHeight: 820, overflow: 'hidden', boxShadow: 'var(--sh-lg)' }}>
+                <PricingCustom onOpenProto={() => goToPage('contact')}/>
               </div>
             </div>
-          </DCArtboard>
-        </DCSection>
+          </section>
+        )}
 
-        <DCSection id="landings" title="Landing · 2 variants" subtitle="Deel-style dark hero vs Odoo-style light all-apps page.">
-          <DCArtboard id="landingA" label="A · Hybrid (dark hero + apps grid)" width={1280} height={2400}>
-            <LandingA onOpenProto={openProto}/>
-          </DCArtboard>
-          <DCArtboard id="landingB" label="B · Odoo-style (light, all apps)" width={1280} height={1100}>
-            <LandingB onOpenProto={openProto}/>
-          </DCArtboard>
-        </DCSection>
-
-        <DCSection id="modules" title="Build your bundle" subtitle="Odoo-grouped modules with per-feature toggles, live bundle summary on the right.">
-          <DCArtboard id="picker" label="Modules picker" width={1280} height={860}>
-            <ModulesCustomizable onOpenProto={openProto}/>
-          </DCArtboard>
-          <DCArtboard id="hr" label="HR dashboard (sample)" width={1280} height={820}>
-            <DetailHR onOpenProto={openProto}/>
-          </DCArtboard>
-        </DCSection>
-
-        <DCSection id="pricing" title="Pricing · per feature" subtitle="Live calculator, bundle summary, estimated stack savings.">
-          <DCArtboard id="custom" label="Per-feature à la carte" width={1280} height={820}>
-            <PricingCustom onOpenProto={openProto}/>
-          </DCArtboard>
-        </DCSection>
-
-        <DCSection id="capture" title="Interest capture · simple checklist" subtitle="Fill in live with companies. Picks carry from the bundle screen.">
-          <DCArtboard id="check" label="Checklist" width={1120} height={760}>
-            <CaptureChecklistV2 onSubmit={() => {}}/>
-          </DCArtboard>
-        </DCSection>
-
-        <DCSection id="proto" title="Clickable prototype" subtitle="6 screens · Hero A/B toggle on landing · state persists across.">
-          <DCArtboard id="open" label="Open →" width={680} height={420}>
-            <div style={{ padding: 40, height: '100%', background: 'var(--bg-alt)', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', gap: 14, textAlign: 'center' }}>
-              <h3 className="f-display" style={{ fontSize: 28, margin: 0 }}>6 screens. Fully clickable.</h3>
-              <p className="f-body" style={{ fontSize: 14, color: 'var(--text-3)', maxWidth: 420, margin: 0 }}>
-                Landing → bundle picker → HR dashboard → pricing → capture → thanks.
-              </p>
-              <button className="btn lg brand" onClick={openProto}>▷ Launch prototype</button>
+        {activePage === 'contact' && (
+          <section className="site-section alt" style={{ padding: 24 }}>
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <div className="card" style={{ width: 1280, minHeight: 820, overflow: 'hidden', boxShadow: 'var(--sh-lg)' }}>
+                <CaptureChecklistV2 onSubmit={() => goToPage('thanks')}/>
+              </div>
             </div>
-          </DCArtboard>
-        </DCSection>
-      </DesignCanvas>
+          </section>
+        )}
+
+        {activePage === 'thanks' && (
+          <section className="site-section">
+            <div className="site-container">
+              <SiteThankYou onRestart={() => goToPage('home')}/>
+            </div>
+          </section>
+        )}
+      </main>
 
       {protoOpen && ReactDOM.createPortal(<Proto onClose={closeProto}/>, document.getElementById('proto-root'))}
     </BundleProvider>
