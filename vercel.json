@@ -2,7 +2,7 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "rewrites": [
-    { "source": "/", "destination": "/Sanabil Studio All in One.html" }
+    { "source": "/", "destination": "/Sanabil%20Studio%20All%20in%20One.html" }
   ],
   "headers": [
     {
