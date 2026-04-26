@@ -2,10 +2,10 @@
   "name": "sanabil-studio-all-in-one",
   "version": "0.1.0",
   "private": true,
-  "description": "Sanabil Studio · All in One — unified operations platform pitch wireframe",
+  "description": "Sanabil Studio \u00b7 All in One \u2014 unified operations platform pitch wireframe",
   "scripts": {
-    "dev": "npx serve .",
-    "start": "npx serve ."
+    "dev": "node api.js && npx serve .",
+    "start": "node api.js && npx serve ."
   },
   "license": "UNLICENSED"
 }

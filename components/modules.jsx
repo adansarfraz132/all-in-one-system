@@ -17,20 +17,42 @@ const BundleProvider = ({ children }) => {
 
 const useBundle = () => React.useContext(BundleContext);
 
+// Dependency warning banner
+const DependencyBanner = () => {
+  const b = useBundle();
+  const warnings = getDependencyWarnings(b.picked);
+  if (warnings.length === 0) return null;
+  const allMissing = [...new Set(warnings.flatMap(w => w.missing.map(m => m.id)))];
+  return (
+    <div style={{ background: '#fef3c7', border: '1px solid #f59e0b', borderRadius: 10, padding: '10px 14px', marginBottom: 14, display: 'flex', alignItems: 'flex-start', gap: 10 }}>
+      <UIIcon name="warn" size={18} color="#92400e"/>
+      <div style={{ flex: 1, fontSize: 12, color: '#7c2d12', lineHeight: 1.5 }}>
+        <b style={{ color: '#92400e' }}>Heads up — {warnings.length} feature{warnings.length === 1 ? '' : 's'} need{warnings.length === 1 ? 's' : ''} a dependency.</b><br/>
+        {warnings.slice(0, 3).map((w, i) => (
+          <span key={i}><b>{w.sub.name}</b> needs {w.missing.map(m => m.name).join(' + ')}{i < Math.min(warnings.length, 3) - 1 ? '; ' : ''}</span>
+        ))}
+        {warnings.length > 3 && <span> · +{warnings.length - 3} more</span>}
+      </div>
+      <button className="btn sm brand" onClick={() => b.pickAll(allMissing)}>Auto-add deps</button>
+    </div>
+  );
+};
+
 // MODULES PICKER — clean, Odoo-grouped + side summary
 const ModulesCustomizable = ({ onOpenProto }) => {
   const b = useBundle();
-  const groups = ['Human Resources', 'Finance', 'Operations'];
+  const groups = ['Human Resources', 'Finance', 'Revenue & Customers', 'Operations'];
+  const totalSubs = SUBFUNCTIONS.length;
 
   return (
-    <div style={{ width: '100%', background: 'var(--bg)', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ width: '100%', height: '100%', background: 'var(--bg)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       <div style={{ padding: '28px 40px 20px', borderBottom: '1px solid var(--border)' }}>
         <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 24 }}>
           <div>
             <span className="chip brand" style={{ marginBottom: 10 }}>BUILD YOUR BUNDLE</span>
             <h2 className="f-display" style={{ fontSize: 30, margin: '4px 0 4px' }}>Pick exactly what you need.</h2>
             <p className="f-body" style={{ fontSize: 14, color: 'var(--text-3)', margin: 0 }}>
-              Turn on individual features across 11 modules. Price updates as you go — no module, no bill.
+              Turn on individual features across {MODULES.length} modules ({totalSubs} sub-features). Price updates as you go — no module, no bill.
             </p>
           </div>
           <div className="card" style={{ padding: '14px 18px', minWidth: 220, background: 'var(--text)', color: '#fff', border: 'none' }}>
@@ -44,10 +66,12 @@ const ModulesCustomizable = ({ onOpenProto }) => {
         </div>
       </div>
 
-      <div className="site-split">
-        <div style={{ padding: '24px 40px' }}>
+      <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 300px', minHeight: 0 }}>
+        <div className="scroll" style={{ padding: '20px 40px' }}>
+          <DependencyBanner/>
           {groups.map(g => {
             const mods = MODULES.filter(m => m.group === g);
+            if (mods.length === 0) return null;
             return (
               <div key={g} style={{ marginBottom: 32 }}>
                 <h3 className="f-script" style={{ fontSize: 26, margin: '0 0 14px' }}>{g}</h3>
@@ -69,20 +93,24 @@ const ModulesCustomizable = ({ onOpenProto }) => {
                         </div>
                         <button className="btn sm ghost" onClick={() => b.pickAll(subs.map(s => s.id))}>+ Select all</button>
                       </div>
-                      <div className="site-grid-2">
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 6 }}>
                         {subs.map(s => {
                           const on = b.picked.has(s.id);
+                          const hasDeps = s.requires && s.requires.some(r => !b.picked.has(r));
                           return (
                             <div key={s.id} className="clickable" onClick={() => b.toggle(s.id)}
                                  style={{ padding: '8px 12px', display: 'flex', alignItems: 'center', gap: 10,
                                           background: on ? 'var(--brand-soft)' : 'var(--bg-alt)',
-                                          border: `1px solid ${on ? 'var(--brand)' : 'transparent'}`,
+                                          border: `1px solid ${on && hasDeps ? '#f59e0b' : on ? 'var(--brand)' : 'transparent'}`,
                                           borderRadius: 8, transition: 'all 120ms' }}>
                               <div style={{ width: 16, height: 16, borderRadius: 4, border: `1.5px solid ${on ? 'var(--brand)' : 'var(--border-strong)'}`, background: on ? 'var(--brand)' : '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                                 {on && <UIIcon name="check" size={11} color="#fff" sw={3}/>}
                               </div>
                               <div style={{ flex: 1, minWidth: 0 }}>
-                                <div className="f-head" style={{ fontSize: 13 }}>{s.name}</div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                                  <span className="f-head" style={{ fontSize: 13 }}>{s.name}</span>
+                                  {s.requires && <span title={'Requires: ' + s.requires.join(', ')} style={{ fontSize: 9, color: on && hasDeps ? '#92400e' : 'var(--text-4)', background: on && hasDeps ? '#fef3c7' : 'var(--bg-alt)', padding: '1px 5px', borderRadius: 4, fontWeight: 600 }}>↳ deps</span>}
+                                </div>
                                 <div className="f-body" style={{ fontSize: 11, color: 'var(--text-3)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{s.desc}</div>
                               </div>
                               <span className="f-mono" style={{ fontSize: 11, color: on ? 'var(--brand)' : 'var(--text-3)' }}>+{s.price}</span>
@@ -98,13 +126,13 @@ const ModulesCustomizable = ({ onOpenProto }) => {
           })}
         </div>
 
-        {/* Right summary */}
+        {/* Right summary — sticky */}
         <div style={{ borderLeft: '1px solid var(--border)', background: 'var(--bg-alt)', display: 'flex', flexDirection: 'column' }}>
           <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border)' }}>
             <div className="f-head" style={{ fontSize: 14 }}>Your bundle</div>
-            <div className="f-body" style={{ fontSize: 11, color: 'var(--text-3)' }}>Live preview</div>
+            <div className="f-body" style={{ fontSize: 11, color: 'var(--text-3)' }}>Live preview · tell us what you need</div>
           </div>
-          <div style={{ flex: 1, padding: '12px 20px' }}>
+          <div className="scroll" style={{ flex: 1, padding: '12px 20px' }}>
             {b.picked.size === 0 ? (
               <div style={{ padding: '30px 0', textAlign: 'center', fontSize: 13, color: 'var(--text-4)' }}>← Tick features to build your bundle</div>
             ) : (
@@ -135,7 +163,7 @@ const ModulesCustomizable = ({ onOpenProto }) => {
             <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: 'var(--ok)', marginBottom: 12 }}>
               <span>Annual save −15%</span><span className="f-mono">SAR {(b.total * 0.85 * 12) | 0}</span>
             </div>
-            <button className="btn primary" style={{ width: '100%' }} onClick={onOpenProto}>See pricing →</button>
+            <button className="btn primary" style={{ width: '100%' }} onClick={onOpenProto}>Send my picks →</button>
             <button className="btn ghost sm" style={{ width: '100%', marginTop: 4 }} onClick={b.clear} disabled={b.picked.size === 0}>Clear</button>
           </div>
         </div>
@@ -145,7 +173,7 @@ const ModulesCustomizable = ({ onOpenProto }) => {
 };
 
 // HR DASHBOARD — formal, clean, all clickable
-const DetailHR = ({ onOpenProto, onNavigateView }) => {
+const DetailHR = ({ onOpenProto, onBack, onNavigateView, showSidebar = true }) => {
   const [nav, setNav] = useState('Dashboard');
   const [selTask, setSelTask] = useState(null);
   const tasks = [
@@ -155,8 +183,9 @@ const DetailHR = ({ onOpenProto, onNavigateView }) => {
   ];
 
   return (
-    <div style={{ width: '100%', background: 'var(--bg)', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ width: '100%', height: '100%', background: 'var(--bg)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       <div style={{ padding: '14px 24px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 14, background: '#fff' }}>
+        {onBack && <button className="btn sm ghost" onClick={onBack} style={{ padding: '4px 10px' }}>← Modules</button>}
         <AppIcon tone="pink" glyph="users" size={32}/>
         <span className="f-head" style={{ fontSize: 16 }}>HR & People</span>
         <div style={{ flex: 1 }}/>
@@ -168,37 +197,40 @@ const DetailHR = ({ onOpenProto, onNavigateView }) => {
         <div style={{ width: 30, height: 30, borderRadius: 15, background: 'var(--brand)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 600 }}>A</div>
       </div>
 
-      <div className="site-split-compact">
-        <div style={{ borderRight: '1px solid var(--border)', background: 'var(--bg-alt)', padding: 12 }}>
-          {['Dashboard', 'People', 'Hiring', 'Time off', 'Documents', 'Org chart', 'Reports'].map(x => (
-            <div key={x} className="clickable" onClick={() => {
-              setNav(x);
-              if (onNavigateView && x === 'Dashboard') onNavigateView('dashboard');
-              if (onNavigateView && x === 'Org chart') onNavigateView('org');
-              if (onNavigateView && x === 'Time off') onNavigateView('timeoff');
-            }}
-                 style={{ padding: '8px 12px', fontSize: 13, marginBottom: 2,
-                          background: nav === x ? '#fff' : 'transparent',
-                          color: nav === x ? 'var(--text)' : 'var(--text-2)',
-                          fontWeight: nav === x ? 600 : 400,
-                          borderRadius: 6, boxShadow: nav === x ? 'var(--sh-sm)' : 'none' }}>
-              {x}
+      <div style={{ flex: 1, display: 'grid', gridTemplateColumns: showSidebar ? '200px 1fr' : '1fr', minHeight: 0 }}>
+        {showSidebar && (
+          <div style={{ borderRight: '1px solid var(--border)', background: 'var(--bg-alt)', padding: 12 }}>
+            {['Dashboard', 'People', 'Hiring', 'Time off', 'Documents', 'Org chart', 'Reports'].map(x => (
+              <div key={x} className="clickable" onClick={() => {
+                setNav(x);
+                if (!onNavigateView) return;
+                if (x === 'Dashboard') onNavigateView('dashboard');
+                if (x === 'Org chart') onNavigateView('org');
+                if (x === 'Time off') onNavigateView('timeoff');
+              }}
+                   style={{ padding: '8px 12px', fontSize: 13, marginBottom: 2,
+                            background: nav === x ? '#fff' : 'transparent',
+                            color: nav === x ? 'var(--text)' : 'var(--text-2)',
+                            fontWeight: nav === x ? 600 : 400,
+                            borderRadius: 6, boxShadow: nav === x ? 'var(--sh-sm)' : 'none' }}>
+                {x}
+              </div>
+            ))}
+            <hr className="sep" style={{ margin: '12px 0' }}/>
+            <div style={{ fontSize: 11, color: 'var(--text-4)', letterSpacing: 1, marginBottom: 6 }}>CONNECTED</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+              {['Payroll', 'IT', 'Perf.'].map(x => <span key={x} className="chip clickable" onClick={onOpenProto}>{x}</span>)}
             </div>
-          ))}
-          <hr className="sep" style={{ margin: '12px 0' }}/>
-          <div style={{ fontSize: 11, color: 'var(--text-4)', letterSpacing: 1, marginBottom: 6 }}>CONNECTED</div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-            {['Payroll', 'IT', 'Perf.'].map(x => <span key={x} className="chip clickable" onClick={onOpenProto}>{x}</span>)}
           </div>
-        </div>
+        )}
 
-        <div style={{ padding: '24px 28px' }}>
+        <div className="scroll" style={{ padding: '24px 28px' }}>
           <div style={{ marginBottom: 18 }}>
             <div style={{ fontSize: 13, color: 'var(--text-3)' }}>Good morning, Abdulaziz</div>
             <h3 className="f-display" style={{ fontSize: 24, margin: '2px 0 0' }}>Here's what matters today.</h3>
           </div>
 
-          <div className="site-grid-4" style={{ marginBottom: 16 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 16 }}>
             {[
               { k: '287', l: 'Active people', trend: '+4 this week', c: 'var(--ok)' },
               { k: '12', l: 'Out today', trend: '3 WFH · 9 leave', c: 'var(--text-3)' },
@@ -213,7 +245,7 @@ const DetailHR = ({ onOpenProto, onNavigateView }) => {
             ))}
           </div>
 
-          <div className="site-grid-2-wide" style={{ marginBottom: 14 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 14, marginBottom: 14 }}>
             <div className="card" style={{ padding: 18 }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
                 <h4 className="f-head" style={{ margin: 0, fontSize: 14 }}>Needs you</h4>
@@ -259,7 +291,7 @@ const DetailHR = ({ onOpenProto, onNavigateView }) => {
             </div>
           </div>
 
-          <div className="site-grid-3">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
             <div className="card hover clickable" style={{ padding: 14 }}>
               <div className="f-head" style={{ fontSize: 13, marginBottom: 2 }}>Headcount · 12 mo</div>
               <div style={{ fontSize: 11, color: 'var(--text-3)', marginBottom: 8 }}>+38 hires · −9 exits</div>
