@@ -11,18 +11,13 @@
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
 </head>
 <body>
-<div id="canvas-root"></div>
-<div class="proto-shell" id="proto-root"></div>
-
-<div class="tw-panel" id="tw-panel">
-  <h4>Tweaks</h4>
-  <div class="tw-row"><span>Brand color</span><div class="tw-swatches" id="tw-swatches"></div></div>
-</div>
+<div id="app-root"></div>
 
 <script src="components/primitives.jsx" type="text/babel"></script>
 <script src="components/subfunctions.jsx" type="text/babel"></script>
 <script src="components/landings.jsx" type="text/babel"></script>
 <script src="components/modules.jsx" type="text/babel"></script>
+<script src="components/hr-samples.jsx" type="text/babel"></script>
 <script src="components/pricing.jsx" type="text/babel"></script>
 <script src="components/proto.jsx" type="text/babel"></script>
 
@@ -50,140 +45,17 @@ const applyBrand = (key) => {
   r.setProperty('--brand-ink', b.ink);
 };
 
-const SiteThankYou = ({ onRestart }) => {
-  const b = useBundle();
-  return (
-    <div style={{ width: '100%', minHeight: '62vh', background: 'var(--bg)', padding: '56px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 18, textAlign: 'center' }}>
-      <div style={{ width: 48, height: 48, borderRadius: 24, background: 'var(--brand-soft)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--brand)', fontSize: 26 }}>✓</div>
-      <h2 className="f-display" style={{ fontSize: 52, maxWidth: 920, lineHeight: 1.06, margin: 0 }}>Shukran. You shaped our roadmap.</h2>
-      <p className="f-body" style={{ fontSize: 20, color: 'var(--text-3)', maxWidth: 780, margin: 0 }}>
-        {b.picked.size} feature{b.picked.size === 1 ? '' : 's'} on your wishlist · SAR {b.total} /emp/mo. We&apos;ll follow up in 48 hours with a tailored rollout plan.
-      </p>
-      {b.picked.size > 0 && (
-        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap', justifyContent: 'center', maxWidth: 860 }}>
-          {[...b.picked].map(id => { const s = findSub(id); return s ? <span key={id} className="chip brand">{s.name}</span> : null; })}
-        </div>
-      )}
-      <button className="btn" onClick={onRestart}>↺ Restart prototype</button>
-    </div>
-  );
-};
-
 const App = () => {
-  const [protoOpen, setProtoOpen] = useState(false);
-  const [activePage, setActivePage] = useState(() => (window.location.hash || '#home').replace('#', ''));
-  const openProto = () => { document.body.classList.add('proto-active'); setProtoOpen(true); };
-  const closeProto = () => { document.body.classList.remove('proto-active'); setProtoOpen(false); };
-  const goToPage = (key) => {
-    window.location.hash = `#${key}`;
-    setActivePage(key);
-  };
-
   useEffect(() => { applyBrand(TWEAK_DEFAULTS.brand); }, []);
-  useEffect(() => {
-    const onHashChange = () => setActivePage((window.location.hash || '#home').replace('#', ''));
-    window.addEventListener('hashchange', onHashChange);
-    return () => window.removeEventListener('hashchange', onHashChange);
-  }, []);
 
   return (
     <BundleProvider>
-      <main className="site">
-        {activePage !== 'home' && (
-          <TopNav onOpenProto={openProto} onNavigate={goToPage}/>
-        )}
-
-        {activePage === 'home' && (
-          <LandingA onOpenProto={() => goToPage('solutions')} onNavigate={goToPage}/>
-        )}
-
-        {activePage === 'solutions' && (
-          <section className="site-section">
-            <div className="site-container">
-              <div className="site-section-head">
-                <h2 className="f-display">Build bundle</h2>
-                <p className="f-body">Configure your bundle across HR, finance, and operations.</p>
-              </div>
-              <ModulesCustomizable onOpenProto={() => goToPage('pricing')}/>
-            </div>
-          </section>
-        )}
-
-        {activePage === 'product' && (
-          <section className="site-section alt">
-            <div className="site-container">
-              <div className="site-section-head">
-                <h2 className="f-display">Product Experience</h2>
-                <p className="f-body">Preview the HR workspace and daily workflows.</p>
-              </div>
-              <DetailHR onOpenProto={openProto}/>
-            </div>
-          </section>
-        )}
-
-        {activePage === 'pricing' && (
-          <section className="site-section" style={{ padding: 24 }}>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <div className="card" style={{ width: 1280, minHeight: 820, overflow: 'hidden', boxShadow: 'var(--sh-lg)' }}>
-                <PricingCustom onOpenProto={() => goToPage('contact')}/>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {activePage === 'contact' && (
-          <section className="site-section alt" style={{ padding: 24 }}>
-            <div style={{ display: 'flex', justifyContent: 'center' }}>
-              <div className="card" style={{ width: 1280, minHeight: 820, overflow: 'hidden', boxShadow: 'var(--sh-lg)' }}>
-                <CaptureChecklistV2 onSubmit={() => goToPage('thanks')}/>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {activePage === 'thanks' && (
-          <section className="site-section">
-            <div className="site-container">
-              <SiteThankYou onRestart={() => goToPage('home')}/>
-            </div>
-          </section>
-        )}
-      </main>
-
-      {protoOpen && ReactDOM.createPortal(<Proto onClose={closeProto}/>, document.getElementById('proto-root'))}
+      <Proto />
     </BundleProvider>
   );
 };
 
-ReactDOM.createRoot(document.getElementById('canvas-root')).render(<App/>);
-
-(() => {
-  let tweaks = { ...TWEAK_DEFAULTS };
-  const panel = document.getElementById('tw-panel');
-  const swatches = document.getElementById('tw-swatches');
-
-  Object.keys(BRANDS).forEach(key => {
-    const sw = document.createElement('div');
-    sw.className = 'tw-swatch' + (key === tweaks.brand ? ' selected' : '');
-    sw.style.background = BRANDS[key].main;
-    sw.title = key;
-    sw.onclick = () => {
-      tweaks.brand = key;
-      applyBrand(key);
-      document.querySelectorAll('.tw-swatch').forEach(el => el.classList.remove('selected'));
-      sw.classList.add('selected');
-      window.parent.postMessage({ type: '__edit_mode_set_keys', edits: { brand: key } }, '*');
-    };
-    swatches.appendChild(sw);
-  });
-
-  window.addEventListener('message', (e) => {
-    if (!e.data) return;
-    if (e.data.type === '__activate_edit_mode') panel.classList.add('open');
-    if (e.data.type === '__deactivate_edit_mode') panel.classList.remove('open');
-  });
-  window.parent.postMessage({ type: '__edit_mode_available' }, '*');
-})();
+ReactDOM.createRoot(document.getElementById('app-root')).render(<App/>);
 </script>
 </body>
 </html>

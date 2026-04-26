@@ -23,7 +23,7 @@ const ModulesCustomizable = ({ onOpenProto }) => {
   const groups = ['Human Resources', 'Finance', 'Operations'];
 
   return (
-    <div style={{ width: '100%', height: '100%', background: 'var(--bg)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <div style={{ width: '100%', background: 'var(--bg)', display: 'flex', flexDirection: 'column' }}>
       <div style={{ padding: '28px 40px 20px', borderBottom: '1px solid var(--border)' }}>
         <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: 24 }}>
           <div>
@@ -44,8 +44,8 @@ const ModulesCustomizable = ({ onOpenProto }) => {
         </div>
       </div>
 
-      <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 300px', minHeight: 0 }}>
-        <div className="scroll" style={{ padding: '24px 40px' }}>
+      <div className="site-split">
+        <div style={{ padding: '24px 40px' }}>
           {groups.map(g => {
             const mods = MODULES.filter(m => m.group === g);
             return (
@@ -69,7 +69,7 @@ const ModulesCustomizable = ({ onOpenProto }) => {
                         </div>
                         <button className="btn sm ghost" onClick={() => b.pickAll(subs.map(s => s.id))}>+ Select all</button>
                       </div>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 6 }}>
+                      <div className="site-grid-2">
                         {subs.map(s => {
                           const on = b.picked.has(s.id);
                           return (
@@ -104,7 +104,7 @@ const ModulesCustomizable = ({ onOpenProto }) => {
             <div className="f-head" style={{ fontSize: 14 }}>Your bundle</div>
             <div className="f-body" style={{ fontSize: 11, color: 'var(--text-3)' }}>Live preview</div>
           </div>
-          <div className="scroll" style={{ flex: 1, padding: '12px 20px' }}>
+          <div style={{ flex: 1, padding: '12px 20px' }}>
             {b.picked.size === 0 ? (
               <div style={{ padding: '30px 0', textAlign: 'center', fontSize: 13, color: 'var(--text-4)' }}>← Tick features to build your bundle</div>
             ) : (
@@ -145,7 +145,7 @@ const ModulesCustomizable = ({ onOpenProto }) => {
 };
 
 // HR DASHBOARD — formal, clean, all clickable
-const DetailHR = ({ onOpenProto }) => {
+const DetailHR = ({ onOpenProto, onNavigateView }) => {
   const [nav, setNav] = useState('Dashboard');
   const [selTask, setSelTask] = useState(null);
   const tasks = [
@@ -155,7 +155,7 @@ const DetailHR = ({ onOpenProto }) => {
   ];
 
   return (
-    <div style={{ width: '100%', height: '100%', background: 'var(--bg)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <div style={{ width: '100%', background: 'var(--bg)', display: 'flex', flexDirection: 'column' }}>
       <div style={{ padding: '14px 24px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 14, background: '#fff' }}>
         <AppIcon tone="pink" glyph="users" size={32}/>
         <span className="f-head" style={{ fontSize: 16 }}>HR & People</span>
@@ -168,10 +168,15 @@ const DetailHR = ({ onOpenProto }) => {
         <div style={{ width: 30, height: 30, borderRadius: 15, background: 'var(--brand)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 600 }}>A</div>
       </div>
 
-      <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '200px 1fr', minHeight: 0 }}>
+      <div className="site-split-compact">
         <div style={{ borderRight: '1px solid var(--border)', background: 'var(--bg-alt)', padding: 12 }}>
           {['Dashboard', 'People', 'Hiring', 'Time off', 'Documents', 'Org chart', 'Reports'].map(x => (
-            <div key={x} className="clickable" onClick={() => setNav(x)}
+            <div key={x} className="clickable" onClick={() => {
+              setNav(x);
+              if (onNavigateView && x === 'Dashboard') onNavigateView('dashboard');
+              if (onNavigateView && x === 'Org chart') onNavigateView('org');
+              if (onNavigateView && x === 'Time off') onNavigateView('timeoff');
+            }}
                  style={{ padding: '8px 12px', fontSize: 13, marginBottom: 2,
                           background: nav === x ? '#fff' : 'transparent',
                           color: nav === x ? 'var(--text)' : 'var(--text-2)',
@@ -187,13 +192,13 @@ const DetailHR = ({ onOpenProto }) => {
           </div>
         </div>
 
-        <div className="scroll" style={{ padding: '24px 28px' }}>
+        <div style={{ padding: '24px 28px' }}>
           <div style={{ marginBottom: 18 }}>
             <div style={{ fontSize: 13, color: 'var(--text-3)' }}>Good morning, Abdulaziz</div>
             <h3 className="f-display" style={{ fontSize: 24, margin: '2px 0 0' }}>Here's what matters today.</h3>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 16 }}>
+          <div className="site-grid-4" style={{ marginBottom: 16 }}>
             {[
               { k: '287', l: 'Active people', trend: '+4 this week', c: 'var(--ok)' },
               { k: '12', l: 'Out today', trend: '3 WFH · 9 leave', c: 'var(--text-3)' },
@@ -208,7 +213,7 @@ const DetailHR = ({ onOpenProto }) => {
             ))}
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 14, marginBottom: 14 }}>
+          <div className="site-grid-2-wide" style={{ marginBottom: 14 }}>
             <div className="card" style={{ padding: 18 }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
                 <h4 className="f-head" style={{ margin: 0, fontSize: 14 }}>Needs you</h4>
@@ -254,7 +259,7 @@ const DetailHR = ({ onOpenProto }) => {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+          <div className="site-grid-3">
             <div className="card hover clickable" style={{ padding: 14 }}>
               <div className="f-head" style={{ fontSize: 13, marginBottom: 2 }}>Headcount · 12 mo</div>
               <div style={{ fontSize: 11, color: 'var(--text-3)', marginBottom: 8 }}>+38 hires · −9 exits</div>

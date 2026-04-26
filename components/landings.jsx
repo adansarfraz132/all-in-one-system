@@ -1,6 +1,6 @@
 // Landings — hybrid formal style. Real logos. Hero + proof + Odoo-grouped apps grid.
 
-const TopNav = ({ onOpenProto, onNavigate, dark }) => (
+const TopNav = ({ onOpenProto, dark }) => (
   <div style={{
     padding: '18px 48px',
     display: 'flex', alignItems: 'center', gap: 32,
@@ -14,28 +14,12 @@ const TopNav = ({ onOpenProto, onNavigate, dark }) => (
                      paddingLeft: 12, marginLeft: 2, letterSpacing: 0.2 }}>All in One</span>
     </div>
     <div style={{ flex: 1, display: 'flex', gap: 24 }}>
-      {[
-        { label: 'Home', key: 'home' },
-        { label: 'Product', key: 'product' },
-        { label: 'Build Bundle', key: 'solutions' },
-        { label: 'Pricing', key: 'pricing' },
-        { label: 'Contact', key: 'contact' },
-      ].map(item => (
-        <a
-          key={item.key}
-          href={`#${item.key}`}
-          onClick={(e) => {
-            if (!onNavigate) return;
-            e.preventDefault();
-            onNavigate(item.key);
-          }}
-          style={{ fontSize: 14, color: dark ? 'rgba(255,255,255,.75)' : 'var(--text-2)', cursor: 'pointer', textDecoration: 'none' }}
-        >
-          {item.label}
-        </a>
+      {['Product', 'Solutions', 'Pricing', 'Customers', 'Resources'].map(x => (
+        <span key={x} style={{ fontSize: 14, color: dark ? 'rgba(255,255,255,.75)' : 'var(--text-2)', cursor: 'pointer' }}>{x}</span>
       ))}
     </div>
     <span style={{ fontSize: 14, color: dark ? 'rgba(255,255,255,.75)' : 'var(--text-2)', cursor: 'pointer' }}>Login</span>
+    <button className="btn sm" onClick={onOpenProto} style={dark ? { background: 'transparent', color: '#fff', borderColor: 'rgba(255,255,255,.3)' } : {}}>Book a demo</button>
     <button className="btn sm primary" onClick={onOpenProto} style={dark ? { background: '#fff', color: '#1a1629', borderColor: '#fff' } : {}}>Get started →</button>
   </div>
 );
@@ -47,25 +31,25 @@ const TrustBar = ({ dark }) => (
     borderTop: dark ? '1px solid rgba(255,255,255,.06)' : '1px solid var(--border)',
     background: dark ? 'rgba(255,255,255,.03)' : 'var(--bg-alt)',
   }}>
-    <span style={{ fontSize: 11, letterSpacing: 1.8, color: dark ? 'rgba(255,255,255,.5)' : 'var(--text-4)', fontWeight: 500 }}>INCUBATED & BACKED BY</span>
+    <span style={{ fontSize: 11, letterSpacing: 1.8, color: dark ? 'rgba(255,255,255,.5)' : 'var(--text-4)', fontWeight: 500 }}>BACKED BY</span>
     <SanabilStudioLogo height={30} invert={dark}/>
     <div style={{ width: 1, height: 60, background: dark ? 'rgba(255,255,255,.15)' : 'var(--border-strong)' }}/>
     <SanabilInvestmentsLogo height={80} invert={dark}/>
     <div style={{ flex: 1 }}/>
-    <span style={{ fontSize: 12, color: dark ? 'rgba(255,255,255,.6)' : 'var(--text-3)' }}>PIF-backed · $3B AUM · Trusted by teams across KSA & MENA</span>
+    <span style={{ fontSize: 12, color: dark ? 'rgba(255,255,255,.6)' : 'var(--text-3)' }}>PIF-backed · Trusted by teams across KSA & MENA</span>
   </div>
 );
 
 // LANDING A — HYBRID: dark hero + Odoo-grouped apps grid + proof sections. Best of both.
-const LandingA = ({ onOpenProto, onNavigate }) => (
+const LandingA = ({ onOpenProto, showTopNav = true }) => (
   <div style={{ width: '100%', height: '100%', background: 'var(--bg)', display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
 
     {/* 1. Dark hero */}
     <div style={{ background: 'linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-deep-2) 100%)', color: '#fff' }}>
-      <TopNav onOpenProto={onOpenProto} onNavigate={onNavigate} dark/>
-      <div style={{ padding: '80px 48px 64px', display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: 56, alignItems: 'center', maxWidth: 1280, margin: '0 auto' }}>
+      {showTopNav && <TopNav onOpenProto={onOpenProto} dark/>}
+      <div className="site-grid-hero" style={{ padding: '80px 48px 64px', gap: 56, alignItems: 'center', maxWidth: 1280, margin: '0 auto' }}>
         <div>
-          <span className="chip dark" style={{ marginBottom: 20 }}>⌘  Built for SMBs & mid-market · KSA & MENA</span>
+          <span className="chip dark" style={{ marginBottom: 20 }}>⌘  Built for Saudi & MENA</span>
           <h1 className="f-display" style={{ fontSize: 60, lineHeight: 1.04, margin: '0 0 20px', color: '#fff', letterSpacing: -1.5 }}>
             Run the whole company<br/>from <span style={{ color: '#c8a6e8' }}>one window</span>.
           </h1>
@@ -77,7 +61,7 @@ const LandingA = ({ onOpenProto, onNavigate }) => (
             <button className="btn lg" onClick={onOpenProto} style={{ background: 'transparent', color: '#fff', borderColor: 'rgba(255,255,255,.28)' }}>Build your bundle →</button>
           </div>
           <div style={{ display: 'flex', gap: 22, marginTop: 32, paddingTop: 22, borderTop: '1px solid rgba(255,255,255,.08)' }}>
-            {[['11', 'modules'], ['40+', 'features'], ['< 1 min', 'onboard'], ['100%', 'KSA-compliant']].map(([k, v]) => (
+            {[['11', 'modules'], ['40+', 'features'], ['< 1 day', 'onboard'], ['100%', 'KSA-compliant']].map(([k, v]) => (
               <div key={v}>
                 <div className="f-display" style={{ fontSize: 22, color: '#fff' }}>{k}</div>
                 <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', letterSpacing: 1 }}>{v.toUpperCase()}</div>
@@ -125,7 +109,7 @@ const LandingA = ({ onOpenProto, onNavigate }) => (
               <div style={{ fontWeight: 600, fontSize: 12 }}>287 payslips sent ✓</div>
             </div>
           </div>
-          <div style={{ position: 'absolute', bottom: -18, left: -24, background: '#fff', borderRadius: 10, padding: '10px 14px', boxShadow: '0 12px 28px rgba(0,0,0,.25)', fontSize: 12, color: 'var(--text)', display: 'flex', gap: 8, alignItems: 'center' }}>
+          <div style={{ position: 'absolute', bottom: -52, left: -28, background: '#fff', borderRadius: 10, padding: '10px 14px', boxShadow: '0 12px 28px rgba(0,0,0,.25)', fontSize: 12, color: 'var(--text)', display: 'flex', gap: 8, alignItems: 'center' }}>
             <AppIcon tone="red" glyph="comply" size={24}/>
             <div>
               <div style={{ fontSize: 10, color: 'var(--text-3)' }}>Saudization</div>
@@ -145,7 +129,7 @@ const LandingA = ({ onOpenProto, onNavigate }) => (
         Stop juggling 15 tools that don't talk to each other. Run every operation on one system of record.
       </p>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+      <div className="site-grid-2">
         {/* Without */}
         <div className="card" style={{ padding: 28, textAlign: 'left', background: 'var(--bg-alt)' }}>
           <div className="f-head" style={{ fontSize: 18, marginBottom: 14 }}>Without Sanabil Studio</div>
@@ -215,7 +199,7 @@ const LandingA = ({ onOpenProto, onNavigate }) => (
               <h3 className="f-script" style={{ fontSize: 28, margin: 0, color: 'var(--text)' }}>{group}</h3>
               <span style={{ fontSize: 12, color: 'var(--text-4)' }}>· {items.length} apps</span>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
+            <div className="site-grid-3">
               {items.map(m => (
                 <div key={m.id} className="card hover clickable" style={{ padding: '14px 16px', display: 'flex', gap: 14, alignItems: 'center' }} onClick={onOpenProto}>
                   <AppIcon tone={m.tone} glyph={m.glyph}/>
@@ -248,12 +232,12 @@ const LandingA = ({ onOpenProto, onNavigate }) => (
     </div>
 
     {/* 4. How it works */}
-    <div style={{ padding: '40px 4% 100px', width: '92%', margin: '0 auto', background: 'var(--bg-alt)' }}>
+    <div style={{ padding: '40px 48px 100px', maxWidth: 1200, margin: '0 auto', background: 'var(--bg-alt)' }}>
       <div style={{ textAlign: 'center', marginBottom: 44, paddingTop: 30 }}>
         <div style={{ fontSize: 12, letterSpacing: 2, color: 'var(--text-4)', fontWeight: 500, marginBottom: 10 }}>HOW IT WORKS</div>
         <h2 className="f-display" style={{ fontSize: 36, margin: 0, maxWidth: 640, marginInline: 'auto', letterSpacing: -0.5 }}>Do more in less time with fewer tools.</h2>
       </div>
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 18 }}>
+      <div className="site-grid-3">
         {[
           { tone: 'green', glyph: 'payroll', t: 'Eliminate payroll delays', s: 'Run accurate payroll in minutes. We handle WPS, GOSI, taxes, and filings — automatically.' },
           { tone: 'red', glyph: 'comply', t: 'Avoid costly fines', s: 'From contracts to compliance alerts, we keep you aligned with KSA regulations at all times.' },
@@ -271,9 +255,9 @@ const LandingA = ({ onOpenProto, onNavigate }) => (
 );
 
 // LANDING B — Odoo-style light hero + all apps grid
-const LandingB = ({ onOpenProto, onNavigate }) => (
+const LandingB = ({ onOpenProto, showTopNav = true }) => (
   <div style={{ width: '100%', height: '100%', background: 'var(--bg)', overflow: 'auto' }}>
-    <TopNav onOpenProto={onOpenProto} onNavigate={onNavigate}/>
+    {showTopNav && <TopNav onOpenProto={onOpenProto}/>}
     <div style={{ padding: '64px 48px 40px', textAlign: 'center', maxWidth: 900, margin: '0 auto' }}>
       <h1 className="f-display" style={{ fontSize: 56, lineHeight: 1.05, margin: '0 0 18px', letterSpacing: -1.5 }}>
         One need, <span style={{ color: 'var(--brand)' }}>one app</span>.
@@ -293,7 +277,7 @@ const LandingB = ({ onOpenProto, onNavigate }) => (
         return (
           <div key={group} style={{ marginBottom: 36 }}>
             <h3 className="f-script" style={{ fontSize: 30, margin: '0 0 18px', color: 'var(--text)' }}>{group}</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14 }}>
+            <div className="site-grid-3">
               {items.map(m => (
                 <div key={m.id} className="card hover clickable" style={{ padding: '14px 16px', display: 'flex', gap: 14, alignItems: 'center', background: 'var(--bg-alt)', border: 'none' }} onClick={onOpenProto}>
                   <AppIcon tone={m.tone} glyph={m.glyph}/>
