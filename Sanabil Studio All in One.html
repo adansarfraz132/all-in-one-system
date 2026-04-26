@@ -5,7 +5,7 @@
 <title>Sanabil Studio · All in One</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Caveat:wght@600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=4">
+<link rel="stylesheet" href="styles.css?v=6">
 <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
@@ -18,44 +18,13 @@
 <script src="components/landings.jsx" type="text/babel"></script>
 <script src="components/modules.jsx" type="text/babel"></script>
 <script src="components/hr-samples.jsx" type="text/babel"></script>
+<script src="components/dashboards.jsx" type="text/babel"></script>
+<script src="components/modules-hero.jsx" type="text/babel"></script>
 <script src="components/pricing.jsx" type="text/babel"></script>
 <script src="components/proto.jsx" type="text/babel"></script>
 
 <script type="text/babel">
-const { useState, useEffect } = React;
-
-const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
-  "brand": "aubergine"
-}/*EDITMODE-END*/;
-
-const BRANDS = {
-  aubergine: { main: '#5b2a78', alt: '#7a3fa0', soft: '#efe7f5', ink: '#3b1a52' },
-  indigo:    { main: '#3d3bcb', alt: '#5a5dd3', soft: '#e2e2f8', ink: '#27258a' },
-  forest:    { main: '#1f7a4a', alt: '#2fa566', soft: '#dcf4ea', ink: '#13502f' },
-  teal:      { main: '#1e7a7d', alt: '#3fb5b0', soft: '#d7f0ef', ink: '#10494b' },
-  slate:     { main: '#1c1a26', alt: '#3a3a44', soft: '#e7e8ed', ink: '#0e0e14' },
-};
-
-const applyBrand = (key) => {
-  const b = BRANDS[key] || BRANDS.aubergine;
-  const r = document.documentElement.style;
-  r.setProperty('--brand', b.main);
-  r.setProperty('--brand-2', b.alt);
-  r.setProperty('--brand-soft', b.soft);
-  r.setProperty('--brand-ink', b.ink);
-};
-
-const App = () => {
-  useEffect(() => { applyBrand(TWEAK_DEFAULTS.brand); }, []);
-
-  return (
-    <BundleProvider>
-      <Proto />
-    </BundleProvider>
-  );
-};
-
-ReactDOM.createRoot(document.getElementById('app-root')).render(<App/>);
+ReactDOM.createRoot(document.getElementById('app-root')).render(<WebsiteApp />);
 </script>
 </body>
 </html>

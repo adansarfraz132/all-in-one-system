@@ -1,14 +1,8 @@
 // Org Chart + Time Off sample dashboards — share HR shell styling
 
-const HRShell = ({ current, title, tone, glyph, onNavigateView, children }) => {
+const HRShell = ({ current, title, tone, glyph, children, showSidebar = true, onNavigateView }) => {
   const [nav, setNav] = useState(current);
   const items = ['Dashboard', 'People', 'Hiring', 'Time off', 'Documents', 'Org chart', 'Reports'];
-  const mapView = (label) => {
-    if (label === 'Dashboard') return 'dashboard';
-    if (label === 'Org chart') return 'org';
-    if (label === 'Time off') return 'timeoff';
-    return null;
-  };
   return (
     <div style={{ width: '100%', height: '100%', background: 'var(--bg)', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       <div style={{ padding: '14px 24px', borderBottom: '1px solid var(--border)', display: 'flex', alignItems: 'center', gap: 14, background: '#fff' }}>
@@ -22,23 +16,27 @@ const HRShell = ({ current, title, tone, glyph, onNavigateView, children }) => {
         <button className="btn sm primary">+ Invite</button>
         <div style={{ width: 30, height: 30, borderRadius: 15, background: 'var(--brand)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, fontWeight: 600 }}>A</div>
       </div>
-      <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '200px 1fr', minHeight: 0 }}>
-        <div style={{ borderRight: '1px solid var(--border)', background: 'var(--bg-alt)', padding: 12 }}>
-          {items.map(x => (
-            <div key={x} className="clickable" onClick={() => {
-              setNav(x);
-              const next = mapView(x);
-              if (onNavigateView && next) onNavigateView(next);
-            }}
-                 style={{ padding: '8px 12px', fontSize: 13, marginBottom: 2,
-                          background: nav === x ? '#fff' : 'transparent',
-                          color: nav === x ? 'var(--text)' : 'var(--text-2)',
-                          fontWeight: nav === x ? 600 : 400,
-                          borderRadius: 6, boxShadow: nav === x ? 'var(--sh-sm)' : 'none' }}>
-              {x}
-            </div>
-          ))}
-        </div>
+      <div style={{ flex: 1, display: 'grid', gridTemplateColumns: showSidebar ? '200px 1fr' : '1fr', minHeight: 0 }}>
+        {showSidebar && (
+          <div style={{ borderRight: '1px solid var(--border)', background: 'var(--bg-alt)', padding: 12 }}>
+            {items.map(x => (
+              <div key={x} className="clickable" onClick={() => {
+                setNav(x);
+                if (!onNavigateView) return;
+                if (x === 'Dashboard') onNavigateView('dashboard');
+                if (x === 'Org chart') onNavigateView('org');
+                if (x === 'Time off') onNavigateView('timeoff');
+              }}
+                   style={{ padding: '8px 12px', fontSize: 13, marginBottom: 2,
+                            background: nav === x ? '#fff' : 'transparent',
+                            color: nav === x ? 'var(--text)' : 'var(--text-2)',
+                            fontWeight: nav === x ? 600 : 400,
+                            borderRadius: 6, boxShadow: nav === x ? 'var(--sh-sm)' : 'none' }}>
+                {x}
+              </div>
+            ))}
+          </div>
+        )}
         <div className="scroll" style={{ padding: '24px 28px' }}>{children}</div>
       </div>
     </div>
@@ -95,9 +93,9 @@ const OrgNode = ({ n, level = 0 }) => {
   );
 };
 
-const DetailOrg = ({ onNavigateView }) => {
+const DetailOrg = ({ showSidebar = true, onNavigateView }) => {
   return (
-    <HRShell current="Org chart" title="HR & People · Org chart" tone="pink" glyph="users" onNavigateView={onNavigateView}>
+    <HRShell current="Org chart" title="HR & People · Org chart" tone="pink" glyph="users" showSidebar={showSidebar} onNavigateView={onNavigateView}>
       <div style={{ marginBottom: 18 }}>
         <div style={{ fontSize: 13, color: 'var(--text-3)' }}>Live org chart</div>
         <h3 className="f-display" style={{ fontSize: 24, margin: '2px 0 0' }}>287 people · 3 divisions · live reporting lines</h3>
@@ -190,13 +188,13 @@ const statusStyle = (s) => ({
   rejected: { bg: '#fee2e2', fg: '#991b1b' },
 }[s]);
 
-const DetailTimeOff = ({ onNavigateView }) => {
+const DetailTimeOff = ({ showSidebar = true, onNavigateView }) => {
   const [filter, setFilter] = useState('all');
   const pending = LEAVE_REQUESTS.filter(r => r.status === 'pending').length;
   const filtered = filter === 'all' ? LEAVE_REQUESTS : LEAVE_REQUESTS.filter(r => r.status === filter);
 
   return (
-    <HRShell current="Time off" title="HR & People · Time off" tone="pink" glyph="users" onNavigateView={onNavigateView}>
+    <HRShell current="Time off" title="HR & People · Time off" tone="pink" glyph="users" showSidebar={showSidebar} onNavigateView={onNavigateView}>
       <div style={{ marginBottom: 18 }}>
         <div style={{ fontSize: 13, color: 'var(--text-3)' }}>Leave management</div>
         <h3 className="f-display" style={{ fontSize: 24, margin: '2px 0 0' }}>Who's out, who's asking, who's back.</h3>

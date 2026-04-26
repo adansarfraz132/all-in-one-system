@@ -41,27 +41,27 @@ const TrustBar = ({ dark }) => (
 );
 
 // LANDING A — HYBRID: dark hero + Odoo-grouped apps grid + proof sections. Best of both.
-const LandingA = ({ onOpenProto, showTopNav = true }) => (
+const LandingA = ({ onOpenProto, showInternalNav = true }) => (
   <div style={{ width: '100%', height: '100%', background: 'var(--bg)', display: 'flex', flexDirection: 'column', overflow: 'auto' }}>
 
     {/* 1. Dark hero */}
     <div style={{ background: 'linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-deep-2) 100%)', color: '#fff' }}>
-      {showTopNav && <TopNav onOpenProto={onOpenProto} dark/>}
-      <div className="site-grid-hero" style={{ padding: '80px 48px 64px', gap: 56, alignItems: 'center', maxWidth: 1280, margin: '0 auto' }}>
+      {showInternalNav && <TopNav onOpenProto={onOpenProto} dark/>}
+      <div style={{ padding: '80px 48px 64px', display: 'grid', gridTemplateColumns: '1.1fr 1fr', gap: 56, alignItems: 'center', maxWidth: 1280, margin: '0 auto' }}>
         <div>
           <span className="chip dark" style={{ marginBottom: 20 }}>⌘  Built for Saudi & MENA</span>
           <h1 className="f-display" style={{ fontSize: 60, lineHeight: 1.04, margin: '0 0 20px', color: '#fff', letterSpacing: -1.5 }}>
             Run the whole company<br/>from <span style={{ color: '#c8a6e8' }}>one window</span>.
           </h1>
           <p className="f-body" style={{ fontSize: 17, lineHeight: 1.55, color: 'rgba(255,255,255,.72)', maxWidth: 520, margin: '0 0 28px' }}>
-            HR, payroll, finance, IT, compliance — connected on a single system of record, built for how teams in KSA and MENA actually operate. Turn on what you need. Pay for nothing you don't.
+            HR, payroll, finance, CRM, customer portal, IT, compliance — connected on a single system of record, built for how teams in KSA and MENA actually operate. Turn on what you need. Pay for nothing you don't.
           </p>
           <div style={{ display: 'flex', gap: 10 }}>
             <button className="btn lg" onClick={onOpenProto} style={{ background: '#fff', color: '#1a1629', borderColor: '#fff' }}>Book a demo</button>
             <button className="btn lg" onClick={onOpenProto} style={{ background: 'transparent', color: '#fff', borderColor: 'rgba(255,255,255,.28)' }}>Build your bundle →</button>
           </div>
           <div style={{ display: 'flex', gap: 22, marginTop: 32, paddingTop: 22, borderTop: '1px solid rgba(255,255,255,.08)' }}>
-            {[['11', 'modules'], ['40+', 'features'], ['< 1 day', 'onboard'], ['100%', 'KSA-compliant']].map(([k, v]) => (
+            {[['15', 'modules'], ['50+', 'features'], ['< 1 day', 'onboard'], ['100%', 'KSA-compliant']].map(([k, v]) => (
               <div key={v}>
                 <div className="f-display" style={{ fontSize: 22, color: '#fff' }}>{k}</div>
                 <div style={{ fontSize: 11, color: 'rgba(255,255,255,.5)', letterSpacing: 1 }}>{v.toUpperCase()}</div>
@@ -129,7 +129,7 @@ const LandingA = ({ onOpenProto, showTopNav = true }) => (
         Stop juggling 15 tools that don't talk to each other. Run every operation on one system of record.
       </p>
 
-      <div className="site-grid-2">
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
         {/* Without */}
         <div className="card" style={{ padding: 28, textAlign: 'left', background: 'var(--bg-alt)' }}>
           <div className="f-head" style={{ fontSize: 18, marginBottom: 14 }}>Without Sanabil Studio</div>
@@ -191,7 +191,7 @@ const LandingA = ({ onOpenProto, showTopNav = true }) => (
           Every function your company runs — under one roof.
         </h2>
       </div>
-      {['Human Resources', 'Finance', 'Operations'].map(group => {
+      {['Human Resources', 'Finance', 'Revenue & Customers', 'Operations'].map(group => {
         const items = MODULES.filter(m => m.group === group);
         return (
           <div key={group} style={{ marginBottom: 32 }}>
@@ -199,7 +199,7 @@ const LandingA = ({ onOpenProto, showTopNav = true }) => (
               <h3 className="f-script" style={{ fontSize: 28, margin: 0, color: 'var(--text)' }}>{group}</h3>
               <span style={{ fontSize: 12, color: 'var(--text-4)' }}>· {items.length} apps</span>
             </div>
-            <div className="site-grid-3">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 12 }}>
               {items.map(m => (
                 <div key={m.id} className="card hover clickable" style={{ padding: '14px 16px', display: 'flex', gap: 14, alignItems: 'center' }} onClick={onOpenProto}>
                   <AppIcon tone={m.tone} glyph={m.glyph}/>
@@ -217,6 +217,10 @@ const LandingA = ({ onOpenProto, showTopNav = true }) => (
                       {m.id === 'finance' && 'Accounting + invoicing + GL'}
                       {m.id === 'expenses' && 'Cards & receipt capture'}
                       {m.id === 'procure' && 'POs, vendors, budgets'}
+                      {m.id === 'crm' && 'Pipeline, quotes, deals'}
+                      {m.id === 'portal' && 'Self-serve client portal'}
+                      {m.id === 'helpdesk' && 'Tickets, SLAs, knowledge'}
+                      {m.id === 'inventory' && 'Stock, reorder, COGS'}
                       {m.id === 'travel' && 'Book, track, reconcile'}
                       {m.id === 'projects' && 'Tasks, time, billing'}
                       {m.id === 'comply' && 'Saudization, Qiwa, Mudad'}
@@ -237,11 +241,11 @@ const LandingA = ({ onOpenProto, showTopNav = true }) => (
         <div style={{ fontSize: 12, letterSpacing: 2, color: 'var(--text-4)', fontWeight: 500, marginBottom: 10 }}>HOW IT WORKS</div>
         <h2 className="f-display" style={{ fontSize: 36, margin: 0, maxWidth: 640, marginInline: 'auto', letterSpacing: -0.5 }}>Do more in less time with fewer tools.</h2>
       </div>
-      <div className="site-grid-3">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 18 }}>
         {[
           { tone: 'green', glyph: 'payroll', t: 'Eliminate payroll delays', s: 'Run accurate payroll in minutes. We handle WPS, GOSI, taxes, and filings — automatically.' },
+          { tone: 'pink', glyph: 'crm', t: 'Close deals, bill clients, repeat', s: 'CRM, customer portal, and quotes feed straight into invoicing and finance. No re-keying. No leaks.' },
           { tone: 'red', glyph: 'comply', t: 'Avoid costly fines', s: 'From contracts to compliance alerts, we keep you aligned with KSA regulations at all times.' },
-          { tone: 'pink', glyph: 'users', t: 'One record for every employee', s: 'A unified HRIS — worker info, time off, expenses, performance, reporting. All in one place.' },
         ].map(f => (
           <div key={f.t} className="card hover" style={{ padding: 26, background: '#fff', border: 'none' }}>
             <AppIcon tone={f.tone} glyph={f.glyph} size={44}/>
@@ -255,9 +259,9 @@ const LandingA = ({ onOpenProto, showTopNav = true }) => (
 );
 
 // LANDING B — Odoo-style light hero + all apps grid
-const LandingB = ({ onOpenProto, showTopNav = true }) => (
+const LandingB = ({ onOpenProto, showInternalNav = true }) => (
   <div style={{ width: '100%', height: '100%', background: 'var(--bg)', overflow: 'auto' }}>
-    {showTopNav && <TopNav onOpenProto={onOpenProto}/>}
+    {showInternalNav && <TopNav onOpenProto={onOpenProto}/>}
     <div style={{ padding: '64px 48px 40px', textAlign: 'center', maxWidth: 900, margin: '0 auto' }}>
       <h1 className="f-display" style={{ fontSize: 56, lineHeight: 1.05, margin: '0 0 18px', letterSpacing: -1.5 }}>
         One need, <span style={{ color: 'var(--brand)' }}>one app</span>.
@@ -272,12 +276,12 @@ const LandingB = ({ onOpenProto, showTopNav = true }) => (
     </div>
 
     <div style={{ padding: '24px 48px 64px', maxWidth: 1100, margin: '0 auto' }}>
-      {['Human Resources', 'Finance', 'Operations'].map(group => {
+      {['Human Resources', 'Finance', 'Revenue & Customers', 'Operations'].map(group => {
         const items = MODULES.filter(m => m.group === group);
         return (
           <div key={group} style={{ marginBottom: 36 }}>
             <h3 className="f-script" style={{ fontSize: 30, margin: '0 0 18px', color: 'var(--text)' }}>{group}</h3>
-            <div className="site-grid-3">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 14 }}>
               {items.map(m => (
                 <div key={m.id} className="card hover clickable" style={{ padding: '14px 16px', display: 'flex', gap: 14, alignItems: 'center', background: 'var(--bg-alt)', border: 'none' }} onClick={onOpenProto}>
                   <AppIcon tone={m.tone} glyph={m.glyph}/>
@@ -292,6 +296,10 @@ const LandingB = ({ onOpenProto, showTopNav = true }) => (
                       {m.id === 'finance' && 'Accounting, invoicing, GL'}
                       {m.id === 'expenses' && 'Corporate cards & receipts'}
                       {m.id === 'procure' && 'POs, vendors, budgets'}
+                      {m.id === 'crm' && 'Pipeline, quotes, deals'}
+                      {m.id === 'portal' && 'Self-serve client portal'}
+                      {m.id === 'helpdesk' && 'Tickets, SLAs, knowledge'}
+                      {m.id === 'inventory' && 'Stock, reorder, COGS'}
                       {m.id === 'travel' && 'Book, track, reconcile'}
                       {m.id === 'projects' && 'Tasks, time, billing'}
                       {m.id === 'comply' && 'Saudization, Qiwa, Mudad'}
